@@ -31,7 +31,7 @@ const portalRoutes = express.Router();
   portalRoutes.get('/vertretungsplan', async (req: Request, res: Response) => {
     console.log("Vertretungsplan requested");
     const vertretungsplan = await PortalClient.getInstance().getVertretungsplan();
-    res.json({ vertretungsplan });
+    res.json(Object.fromEntries(vertretungsplan));
   });  
   
 export default portalRoutes;

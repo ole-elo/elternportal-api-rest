@@ -55,6 +55,13 @@ export type ElternportalFile = {
   name: string;
   buffer: Buffer;
 };
+export type VertretungsplanEntry = {
+  hour: number;
+  note: string;
+};
+
+
+
 // =========
 /** gives you a new ElternPortalApiClient instance */
 async function getElternportalClient(
@@ -360,13 +367,37 @@ class ElternPortalApiClient {
   }
 
   /** get lost and found items */
-  async getVertretungsplan(): Promise<string> {
+  async getVertretungsplan(): Promise<Map<Date,VertretungsplanEntry[]>> {
     const { data } = await this.client.get(
       `https://${this.short}.eltern-portal.org/service/vertretungsplan`
     );
+    let vertretungsplan: Map<Date,VertretungsplanEntry[]> = new Map<Date,VertretungsplanEntry[]>();
     const $ = cheerioLoad(data);
-    console.log($);
-    return $("#asam_content").html() as string;
+    console.log($("#asam_content div"));
+    $("#asam_content div div.list.bold.full_width.text_center").each(function
+      (index, element) {
+        console.log("elem "+$(this).text().trim());
+        let dateString: string = $(this).text().trim().split(' - ')[0].split(', ')[1];
+        let [day, month, year] = dateString.split('.');
+        let formattedDate: string = `${year}-${month}-${day}`;
+        let date: Date = new Date(formattedDate);
+        const vertretungTable = $(element).next("table");
+        let currentVertretungsplanDate: VertretungsplanEntry[] = [];
+        console.log(vertretungTable.html());
+        console.log($(vertretungTable).find("tr").text());
+        const entries = $(vertretungTable).find("tr");
+        $(vertretungTable).find("tr").each((_index: number, element) => {
+            currentVertretungsplanDate.push({
+              hour: 0,
+              note: $(element).text()
+            })
+
+      });
+        vertretungsplan.set(date, currentVertretungsplanDate);
+      }
+    )
+    //VertretungsplanEntry
+    return vertretungsplan;
   }
 
   /** get parents letters */
