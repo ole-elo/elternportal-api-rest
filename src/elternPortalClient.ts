@@ -358,6 +358,17 @@ class ElternPortalApiClient {
       .filter((f) => f.trim());
     return fundsachen;
   }
+
+  /** get lost and found items */
+  async getVertretungsplan(): Promise<string> {
+    const { data } = await this.client.get(
+      `https://${this.short}.eltern-portal.org/service/vertretungsplan`
+    );
+    const $ = cheerioLoad(data);
+    console.log($);
+    return $("#asam_content").html() as string;
+  }
+
   /** get parents letters */
   async getElternbriefe(): Promise<Elternbrief[]> {
     const { data } = await this.client.get(
