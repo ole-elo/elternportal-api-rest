@@ -13,10 +13,20 @@ if (!process.env.PORT) {
 const PORT = parseInt(process.env.PORT as string, 10)
 const app = express()
 
+
+
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 app.use(cors())
 app.use(helmet())
+if(process.env.CSR_EXCLUDE){
+  const cspOptions = {
+      directives: {
+        frameAncestors: ["'self'", process.env.CSR_EXCLUDE],
+      },
+    };
+    app.use(helmet.contentSecurityPolicy(cspOptions));
+}
 
 app.use('/', portalRoutes)
 

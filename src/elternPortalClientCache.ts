@@ -59,6 +59,15 @@ export default class ElternPortalClientCache {
         await this.checkClient();
         const vertretungsplan = await this._client.getVertretungsplan();
         return vertretungsplan;
+    }
+
+    public async getVertretungsplanHTML():Promise<String>{
+        if(!this.cache.get("VertretungsplanHTML")){
+            await this.checkClient();
+            const vertretungsplan = await this._client.getVertretungsplanHtml();
+            this.cache.put("VertretungsplanHTML",vertretungsplan);
+        }
+        return this.cache.get("VertretungsplanHTML") as String;
     }    
 
     private async checkClient():Promise<void>

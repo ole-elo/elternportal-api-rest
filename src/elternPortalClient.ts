@@ -366,7 +366,7 @@ class ElternPortalApiClient {
     return fundsachen;
   }
 
-  /** get lost and found items */
+  /** get Vertretungsplan in structured datatype */
   async getVertretungsplan(): Promise<Map<Date,VertretungsplanEntry[]>> {
     const { data } = await this.client.get(
       `https://${this.short}.eltern-portal.org/service/vertretungsplan`
@@ -398,6 +398,15 @@ class ElternPortalApiClient {
     )
     //VertretungsplanEntry
     return vertretungsplan;
+  }
+
+  /** get Vertretungsplan as plain html */
+  async getVertretungsplanHtml(): Promise<String> {
+    const { data } = await this.client.get(
+      `https://${this.short}.eltern-portal.org/service/vertretungsplan`
+    );
+    const $ = cheerioLoad(data);
+    return $("#asam_content div").html() as String;
   }
 
   /** get parents letters */
