@@ -1,8 +1,7 @@
 import  Cache from "timed-cache";
 import * as dotevnv from "dotenv";
 import { Schulaufgabe } from "./types/schulaufgabe";
-import { Elternbrief } from "./types/elternbrief"
-import { ElternPortalApiClient, VertretungsplanEntry } from "./elternPortalClient";
+import { ElternPortalApiClient, VertretungsplanEntry, Elternbrief, ElternportalFile } from "./elternPortalClient";
 
 export default class ElternPortalClientCache {
 
@@ -46,14 +45,20 @@ export default class ElternPortalClientCache {
         return this.cache.get("Schulaufgaben") as Schulaufgabe;
     }
 
-    public async getElternbriefe():Promise<Elternbrief>{
+    public async getElternbriefe():Promise<Elternbrief[]>{
         if(!this.cache.get("Elternbriefe")){
             await this.checkClient();
             const elternbriefe = await this._client.getElternbriefe();
             this.cache.put("Elternbriefe",elternbriefe);
         }
-        return this.cache.get("Elternbriefe") as Elternbrief;
+        return this.cache.get("Elternbriefe") as Elternbrief[];
     }
+
+    public async getElternbriefFile(elternbrief: Elternbrief):Promise<ElternportalFile>{
+        await this.checkClient();
+        return this._client.getElternbrief(elternbrief.id);
+    }
+
 
     public async getVertretungsplan():Promise<Map<Date,VertretungsplanEntry[]>>{
         await this.checkClient();

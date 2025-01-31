@@ -26,7 +26,7 @@ export type Schulaufgabe = {
   title: string;
   date: Date;
 };
-type Elternbrief = {
+export type Elternbrief = {
   id: number;
   readConfirmationId: number | undefined;
   status: string;

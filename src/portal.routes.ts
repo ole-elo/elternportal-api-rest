@@ -3,7 +3,7 @@ import express, {Request, Response} from "express"
 import {StatusCodes} from "http-status-codes"
 import PortalClient from "./elternPortalClientCache"
 import { Schulaufgabe } from "./types/schulaufgabe";
-import { Elternbrief } from "./types/elternbrief";
+//import { Elternbrief } from "./types/elternbrief";
 
 const portalRoutes = express.Router();
 
@@ -30,7 +30,6 @@ const portalRoutes = express.Router();
 
   portalRoutes.get('/vertretungsplan', async (req: Request, res: Response) => {
     console.log("Vertretungsplan requested");
-    
     if (req.query.html){
       const vertretungsplan = await PortalClient.getInstance().getVertretungsplanHTML();
       res.type('html');
